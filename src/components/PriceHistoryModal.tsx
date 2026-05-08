@@ -41,15 +41,28 @@ export default function PriceHistoryModal({ isOpen, onClose, productId, productT
 
   return (
     <div 
-      className="fixed top-0 left-0 w-screen h-screen z-[9999] flex items-center justify-center p-4 sm:p-8"
-      style={{ backgroundColor: 'rgba(10, 10, 10, 0.85)', backdropFilter: 'blur(4px)' }}
       onClick={(e) => { if (e.target === e.currentTarget) onClose(); }}
+      style={{
+        position: 'fixed',
+        top: 0,
+        left: 0,
+        right: 0,
+        bottom: 0,
+        zIndex: 9999,
+        display: 'flex',
+        alignItems: 'center',
+        justifyContent: 'center',
+        backgroundColor: 'rgba(10, 10, 10, 0.85)',
+        backdropFilter: 'blur(4px)',
+        padding: '16px',
+      }}
     >
-      <div className="bg-[#F4F4F0] border-[3px] border-[#0A0A0A] w-full max-w-3xl relative flex flex-col max-h-[85vh] overflow-hidden"
-        style={{ boxShadow: '12px 12px 0px 0px #FF4500' }}
+      <div 
+        style={{ boxShadow: '12px 12px 0px 0px #FF4500', maxHeight: '85vh' }}
+        className="bg-[#F4F4F0] border-[3px] border-[#0A0A0A] w-full max-w-1/2 relative flex flex-col overflow-hidden"
       >
         
-        {/* Modal Header — black strip */}
+        {/* Modal Header */}
         <div className="flex justify-between items-center border-b-[3px] border-[#0A0A0A] bg-[#0A0A0A] text-[#F4F4F0] px-5 py-3 shrink-0">
           <div className="flex items-center gap-3">
             <div className="w-2 h-2 bg-[#FF4500]" />

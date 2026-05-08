@@ -1,111 +1,78 @@
 "use client";
 import { useState } from "react";
-import PriceHistoryModal from "./PriceHistoryModal";
-import CompareDealsModal from "./CompareDealsModal";
 
-export default function ProductCard({
-  id,
-  title,
-  price,
-  store,
-  imageUrl,
-  hasPriceHistory,
-}: any) {
-  const [isHistoryOpen, setIsHistoryOpen] = useState(false);
-  const [isCompareOpen, setIsCompareOpen] = useState(false);
+interface ProductCardProps {
+  id: string;
+  title: string;
+  price: string;
+  store: string;
+  imageUrl: string;
+  hasPriceHistory: boolean;
+  onOpenHistory: () => void;
+  onOpenCompare: () => void;
+}
 
-  // Generate a fake SKU to enforce the industrial aesthetic
-  const sku = `SKU-${id.substring(0, 6).toUpperCase()}`;
+export default function ProductCard({ id, title, price, store, imageUrl, hasPriceHistory, onOpenHistory, onOpenCompare }: ProductCardProps) {
+  const sku = `${id.substring(0, 8).toUpperCase()}`;
 
   return (
-    <>
-      <div className="group relative border-[3px] border-black bg-white flex flex-col h-full hover:shadow-[12px_12px_0px_0px_rgba(255,69,0,1)] hover:-translate-y-2 transition-all duration-300">
-        {/* Manifest Header */}
-        <div className="flex justify-between items-center border-b-[3px] border-black bg-black text-white px-3 py-1.5 shrink-0">
-          <span className="font-mono text-[10px] tracking-[0.2em]">{sku}</span>
-          <span className="font-mono text-[10px] tracking-widest text-[#FF4500]">
-            {store}
-          </span>
-        </div>
+    <div className="group relative border-[3px] border-[#0A0A0A] bg-white flex flex-col h-full transition-all duration-300 hover:shadow-[8px_8px_0px_0px_#FF4500] hover:-translate-y-1.5">
+      
+      {/* Manifest Header */}
+      <div className="flex justify-between items-center border-b-[3px] border-[#0A0A0A] bg-[#0A0A0A] text-[#F4F4F0] px-3 py-1.5 shrink-0">
+        <span className="font-mono text-[9px] tracking-[0.25em] text-[#A8A8A0]">{sku}</span>
+        <span className="font-mono text-[9px] tracking-[0.25em] text-[#FF4500] font-bold">{store}</span>
+      </div>
 
-        {/* Image Region */}
-        <div className="w-full aspect-square bg-white border-b-[3px] border-black relative overflow-hidden flex items-center justify-center p-6 shrink-0">
-          {/* subtle technical grid background */}
-          <div
-            className="absolute inset-0 opacity-5"
-            style={{
-              backgroundImage: "radial-gradient(#000 1px, transparent 1px)",
-              backgroundSize: "16px 16px",
-            }}
-          ></div>
-
-          {imageUrl ? (
-            <img
-              src={imageUrl}
-              alt={title}
-              className="w-full h-full object-contain mix-blend-multiply relative z-10 group-hover:scale-110 transition-transform duration-500 ease-[cubic-bezier(0.33,1,0.68,1)]"
-            />
-          ) : (
-            <div className="w-full h-full flex items-center justify-center font-mono text-gray-300 bg-gray-50 text-xs">
-              NO_DATA
-            </div>
-          )}
-        </div>
-
-        {/* Info Region */}
-        <div className="flex-grow p-5 flex flex-col justify-between bg-[#F4F4F0]">
-          <h3 className="font-sans font-bold text-sm leading-snug mb-6 line-clamp-3 uppercase tracking-tight">
-            {title}
-          </h3>
-          <div>
-            <div className="font-mono text-[10px] text-gray-500 mb-1 tracking-widest">
-              MARKET_VAL
-            </div>
-            <div className="font-mono text-3xl lg:text-4xl font-black tracking-tighter">
-              {price}
-            </div>
+      {/* Image Region */}
+      <div className="w-full aspect-[4/3] bg-white border-b-[3px] border-[#0A0A0A] relative overflow-hidden flex items-center justify-center p-4 sm:p-6 shrink-0">
+        <div className="absolute inset-0 texture-dots" aria-hidden="true" />
+        
+        {imageUrl ? (
+          <img 
+            src={imageUrl} 
+            alt={title} 
+            className="w-full h-full object-contain mix-blend-multiply relative z-10 group-hover:scale-105 transition-transform duration-500 ease-out" 
+          />
+        ) : (
+          <div className="w-full h-full flex items-center justify-center font-mono text-[#A8A8A0] text-[10px] tracking-widest uppercase">
+            No_Image
           </div>
-        </div>
+        )}
+      </div>
 
-        {/* Action Region */}
-        <div className="grid grid-cols-2 border-t-[3px] border-black divide-x-[3px] divide-black mt-auto shrink-0 bg-white">
-          {hasPriceHistory ? (
-            <button
-              onClick={() => setIsHistoryOpen(true)}
-              className="font-mono text-[11px] py-4 uppercase hover:bg-black hover:text-white transition-colors tracking-widest font-bold"
-            >
-              History
-            </button>
-          ) : (
-            <button
-              disabled
-              className="bg-gray-100 text-gray-400 font-mono text-[11px] py-4 uppercase cursor-not-allowed tracking-widest font-bold"
-            >
-              N/A
-            </button>
-          )}
-          <button
-            onClick={() => setIsCompareOpen(true)}
-            className="bg-[#FF4500] text-black font-mono text-[11px] py-4 uppercase hover:bg-black hover:text-[#FF4500] transition-colors tracking-widest font-bold"
-          >
-            Compare
-          </button>
+      {/* Info Region */}
+      <div className="flex-grow p-3 sm:p-4 flex flex-col justify-between bg-[#F4F4F0]">
+        <h3 className="font-bold text-xs sm:text-sm leading-snug mb-4 line-clamp-2 uppercase tracking-tight">
+          {title}
+        </h3>
+        <div>
+          <div className="font-mono text-[9px] text-[#A8A8A0] mb-0.5 tracking-[0.3em] uppercase">Mkt_Val</div>
+          <div className="font-mono text-xl sm:text-2xl lg:text-3xl font-extrabold tracking-tighter">{price}</div>
         </div>
       </div>
 
-      <PriceHistoryModal
-        isOpen={isHistoryOpen}
-        onClose={() => setIsHistoryOpen(false)}
-        productId={id}
-        productTitle={title}
-      />
-
-      <CompareDealsModal
-        isOpen={isCompareOpen}
-        onClose={() => setIsCompareOpen(false)}
-        productTitle={title}
-        productPrice={price}
-      />
-    </>
+      {/* Action Buttons */}
+      <div className="grid grid-cols-2 border-t-[3px] border-[#0A0A0A] divide-x-[3px] divide-[#0A0A0A] mt-auto shrink-0">
+        {hasPriceHistory ? (
+          <button 
+            onClick={onOpenHistory}
+            className="font-mono text-[10px] py-3 uppercase tracking-[0.15em] font-bold bg-[#F4F4F0] hover:bg-[#0A0A0A] hover:text-[#F4F4F0] transition-colors duration-200"
+          >
+            History
+          </button>
+        ) : (
+          <button disabled className="bg-[#EAEAE6] text-[#A8A8A0] font-mono text-[10px] py-3 uppercase cursor-not-allowed tracking-[0.15em] font-bold">
+            N/A
+          </button>
+        )}
+        <button 
+          onClick={onOpenCompare}
+          className="bg-[#FF4500] text-[#0A0A0A] font-mono text-[10px] py-3 uppercase tracking-[0.15em] font-bold hover:bg-[#0A0A0A] hover:text-[#FF4500] transition-colors duration-200"
+        >
+          Compare
+        </button>
+      </div>
+    </div>
   );
 }
