@@ -41,54 +41,84 @@ export default function CompareDealsModal({ isOpen, onClose, productTitle, produ
   if (!isOpen) return null;
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/80 backdrop-blur-sm p-4 max-w-[70%] ">
-      <div className="bg-[#F4F4F0] border-4 border-black w-full max-w-2xl p-6 relative flex flex-col shadow-[16px_16px_0px_0px_#0055FF] max-h-[90vh] overflow-y-auto">
+    <div 
+      className="fixed top-0 left-0 w-screen h-screen z-[9999] flex items-center justify-center p-4 sm:p-8"
+      style={{ backgroundColor: 'rgba(10, 10, 10, 0.85)', backdropFilter: 'blur(4px)' }}
+      onClick={(e) => { if (e.target === e.currentTarget) onClose(); }}
+    >
+      <div className="bg-[#F4F4F0] border-[3px] border-[#0A0A0A] w-full max-w-2xl relative flex flex-col max-h-[85vh] overflow-hidden"
+        style={{ boxShadow: '12px 12px 0px 0px #0047FF' }}
+      >
         
-        {/* Header */}
-        <div className="flex justify-between items-start mb-8 border-b-4 border-black pb-4">
-          <div>
-            <h2 className="font-black text-2xl uppercase tracking-tighter mb-1">Cross-Store Compare</h2>
-            <p className="font-mono text-sm text-gray-600 truncate max-w-sm ">Origin: {productTitle}</p>
+        {/* Modal Header — black strip */}
+        <div className="flex justify-between items-center border-b-[3px] border-[#0A0A0A] bg-[#0A0A0A] text-[#F4F4F0] px-5 py-3 shrink-0">
+          <div className="flex items-center gap-3">
+            <div className="w-2 h-2 bg-[#0047FF]" />
+            <h2 className="font-mono text-xs sm:text-sm font-bold uppercase tracking-[0.2em]">Cross_Store_Compare</h2>
           </div>
           <button 
             onClick={onClose}
-            className="text-4xl font-black leading-none hover:text-[#0055FF] transition-colors"
+            className="font-mono text-xs tracking-widest hover:text-[#0047FF] transition-colors uppercase font-bold"
           >
-            &times;
+            [Close]
           </button>
         </div>
 
+        {/* Origin strip */}
+        <div className="px-5 py-3 border-b-[3px] border-[#0A0A0A]/10 shrink-0 flex justify-between items-center">
+          <p className="font-mono text-[10px] text-[#6B6B6B] truncate tracking-wider uppercase max-w-[70%]">
+            Origin: {productTitle}
+          </p>
+          <span className="font-mono text-xs font-bold text-[#0A0A0A]">{productPrice}</span>
+        </div>
+
         {/* Content */}
-        <div className="w-full min-h-[250px] flex flex-col justify-center">
+        <div className="flex-grow overflow-y-auto p-5">
           {loading ? (
-            <div className="font-mono animate-pulse text-lg font-bold tracking-widest text-[#0055FF] text-center py-10">
-              // AI_AGENT_SEARCHING_OTHER_STORES...
+            <div className="flex flex-col items-center justify-center py-16">
+              <div className="font-mono text-[#0047FF] text-sm font-bold tracking-[0.2em] mb-4">
+                Scanning_Competitors<span className="cursor-blink" />
+              </div>
+              <div className="w-32 h-[3px] bg-[#A8A8A0]/20">
+                <div className="h-full bg-[#0047FF] animate-pulse w-1/2" />
+              </div>
             </div>
           ) : deals.length > 0 ? (
-            <div className="flex flex-col gap-4">
+            <div className="flex flex-col gap-3">
               {deals.map((deal) => (
-                <div key={deal.id} className="border-2 border-black p-4 bg-white flex justify-between items-center group hover:bg-black hover:text-white transition-colors cursor-pointer">
-                  <div>
-                    <div className="font-mono text-xs font-bold mb-1 px-10 py-0.5 bg-black text-white inline-block group-hover:bg-white group-hover:text-black">
-                      {deal.store}
+                <a 
+                  key={deal.id} 
+                  href={deal.link || "#"} 
+                  target="_blank" 
+                  rel="noopener noreferrer"
+                  className="border-[3px] border-[#0A0A0A] p-4 bg-white flex justify-between items-start group hover:border-[#0047FF] transition-colors duration-200 cursor-pointer"
+                >
+                  <div className="flex-grow min-w-0 mr-4">
+                    <div className="flex items-center gap-2 mb-2">
+                      <span className="font-mono text-[9px] font-bold px-2 py-0.5 bg-[#0A0A0A] text-white tracking-[0.2em] uppercase shrink-0">
+                        {deal.store}
+                      </span>
+                      <span className="font-mono text-[9px] text-[#A8A8A0] tracking-widest uppercase">
+                        {deal.matchConfidence} match
+                      </span>
                     </div>
-                    <div className="font-bold line-clamp-1">{deal.title}</div>
-                    <div className="font-mono text-xs text-gray-500 mt-1 group-hover:text-gray-300">
-                      Match Confidence: {deal.matchConfidence}
-                    </div>
+                    <div className="font-bold text-xs sm:text-sm line-clamp-2 uppercase tracking-tight leading-snug">{deal.title}</div>
                   </div>
-                  <div className="text-right ml-4 shrink-0">
-                    <div className="font-mono text-2xl font-black text-[#0055FF]">{deal.price}</div>
-                    <a href={deal.link} target="_blank" rel="noopener noreferrer" className="block text-xs uppercase font-bold mt-1 underline decoration-2 underline-offset-4 hover:text-black">
-                      View Deal
-                    </a>
+                  <div className="text-right shrink-0">
+                    <div className="font-mono text-xl sm:text-2xl font-extrabold text-[#0047FF] tracking-tighter">{deal.price}</div>
+                    <span className="font-mono text-[9px] text-[#6B6B6B] tracking-widest uppercase group-hover:text-[#0047FF] transition-colors">
+                      View →
+                    </span>
                   </div>
-                </div>
+                </a>
               ))}
             </div>
           ) : (
-            <div className="font-mono text-center text-gray-500 py-10 uppercase tracking-widest border-2 border-dashed border-gray-400">
-              [EXCLUSIVE_COMMODITY] NO_MATCHES_FOUND
+            <div className="flex flex-col items-center justify-center py-16">
+              <div className="font-mono text-[#A8A8A0] text-xs tracking-[0.3em] uppercase mb-3">
+                No Matches Located
+              </div>
+              <div className="w-12 h-[3px] bg-[#A8A8A0]/30" />
             </div>
           )}
         </div>
@@ -96,9 +126,9 @@ export default function CompareDealsModal({ isOpen, onClose, productTitle, produ
         {/* Footer */}
         <button 
           onClick={onClose}
-          className="mt-8 w-full bg-black text-white py-4 font-mono font-bold text-xl uppercase tracking-widest hover:bg-[#0055FF] hover:text-white transition-colors"
+          className="shrink-0 w-full bg-[#0A0A0A] text-[#F4F4F0] py-4 font-mono font-bold text-sm uppercase tracking-[0.2em] hover:bg-[#0047FF] hover:text-white transition-colors duration-200 border-t-[3px] border-[#0A0A0A]"
         >
-          [ CLOSE_COMPARE ]
+          [ Close_Compare ]
         </button>
       </div>
     </div>

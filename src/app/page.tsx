@@ -10,13 +10,13 @@ export default function Home() {
   const [isSearching, setIsSearching] = useState(false);
   const [products, setProducts] = useState<Product[]>([]);
   const [error, setError] = useState<string | null>(null);
+  const [resultCount, setResultCount] = useState(0);
 
   const handleSearch = async (query: string) => {
     setIsSearching(true);
     setProducts([]);
     setError(null);
     
-    // Call the backend orchestration action
     const result = await processSearchQuery(query);
 
     if (!result.success) {
@@ -26,43 +26,74 @@ export default function Home() {
     }
 
     setProducts(result.data.products);
+    setResultCount(result.data.products.length);
     setIsSearching(false);
   };
 
   return (
-    <main className="min-h-screen flex flex-col">
-      <header className="mb-24 mt-8">
-        <h1 className="text-4xl md:text-6xl font-black uppercase tracking-tighter mb-2">
-          Anti_Retail
-        </h1>
-        <p className="font-mono text-gray-500">Natural Language Commodity Locator // v1.0.0</p>
+    <main className="min-h-screen flex flex-col pb-16">
+      {/* Hero Header */}
+      <header className="mb-12 sm:mb-20 mt-4 sm:mt-8">
+        <div className="flex items-baseline gap-4 mb-3">
+          <h1 className="text-5xl sm:text-7xl lg:text-8xl font-extrabold uppercase tracking-[-0.06em] leading-[0.85]">
+            Anti<span className="text-accent">_</span>Retail
+          </h1>
+          <div className="hidden sm:block h-3 w-3 bg-accent animate-pulse" />
+        </div>
+        <p className="font-mono text-ink-muted text-xs sm:text-sm tracking-[0.15em] uppercase">
+          Natural Language Commodity Locator
+        </p>
       </header>
 
-      <section className="mb-16">
+      {/* Search Region */}
+      <section className="mb-12 sm:mb-20">
         <SearchBar onSearch={handleSearch} />
         {error && (
-          <div className="mt-4 p-4 border-2 border-[#FF4500] bg-white text-[#FF4500] font-mono text-sm uppercase">
-            {error}
+          <div className="mt-6 p-4 border-[3px] border-accent bg-surface-elevated font-mono text-sm uppercase tracking-wider text-accent">
+            <span className="text-ink mr-2">ERR:</span>{error}
           </div>
         )}
       </section>
 
+      {/* Results Region */}
       <section className="flex-grow">
         {isSearching && <LoadingState />}
         
         {!isSearching && products.length > 0 && (
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-4 md:gap-8">
-            {products.map((product) => (
-              <ProductCard 
-                key={product.id}
-                id={product.id}
-                title={product.title}
-                price={product.currentPrice}
-                store={product.store}
-                imageUrl={product.imageUrl}
-                hasPriceHistory={product.hasPriceHistory}
-              />
-            ))}
+          <>
+            {/* Results header strip */}
+            <div className="flex justify-between items-center border-b-[3px] border-ink pb-3 mb-8">
+              <span className="font-mono text-xs tracking-[0.2em] uppercase text-ink-muted">
+                {resultCount} Commodities Located
+              </span>
+              <span className="font-mono text-[10px] tracking-widest text-ink-faint uppercase">
+                Source: Amazon.in
+              </span>
+            </div>
+
+            <div className="grid grid-cols-2 md:grid-cols-4 gap-4 md:gap-6">
+              {products.map((product) => (
+                <ProductCard 
+                  key={product.id}
+                  id={product.id}
+                  title={product.title}
+                  price={product.currentPrice}
+                  store={product.store}
+                  imageUrl={product.imageUrl}
+                  hasPriceHistory={product.hasPriceHistory}
+                />
+              ))}
+            </div>
+          </>
+        )}
+
+        {/* Empty state */}
+        {!isSearching && products.length === 0 && !error && (
+          <div className="flex flex-col items-center justify-center py-24 sm:py-40 text-center">
+            <div className="font-mono text-ink-faint text-xs tracking-[0.3em] uppercase mb-6">
+              // Awaiting_Query_Input
+            </div>
+            <div className="w-16 h-[3px] bg-ink-faint" />
           </div>
         )}
       </section>

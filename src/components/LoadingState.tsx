@@ -2,32 +2,54 @@
 import { useState, useEffect } from "react";
 
 const steps = [
-  "TRANSLATING_INTENT...",
-  "EXTRACTING_PARAMETERS...",
-  "SCANNING_AMAZON_DB...",
-  "SCANNING_FLIPKART_DB...",
-  "AGGREGATING_RESULTS..."
+  "PARSING_NATURAL_LANGUAGE",
+  "EXTRACTING_INTENT_PARAMS",
+  "QUERYING_AMAZON_IN",
+  "INDEXING_PRICE_DATA",
+  "COMPILING_MANIFEST",
 ];
 
 export default function LoadingState() {
   const [stepIndex, setStepIndex] = useState(0);
+  const [progress, setProgress] = useState(0);
 
   useEffect(() => {
-    const interval = setInterval(() => {
+    const stepInterval = setInterval(() => {
       setStepIndex((current) => (current + 1) % steps.length);
-    }, 800);
-    return () => clearInterval(interval);
+    }, 900);
+
+    const progressInterval = setInterval(() => {
+      setProgress((p) => (p >= 100 ? 0 : p + 2));
+    }, 50);
+
+    return () => {
+      clearInterval(stepInterval);
+      clearInterval(progressInterval);
+    };
   }, []);
 
   return (
-    <div className="w-full py-24 flex flex-col items-center justify-center border-4 border-dashed border-gray-300">
-      <div className="font-mono text-[#FF4500] text-xl md:text-3xl font-bold">
+    <div className="w-full py-16 sm:py-24 flex flex-col items-center justify-center border-[3px] border-dashed border-ink-faint/30 relative overflow-hidden">
+      {/* Scanline overlay */}
+      <div className="absolute inset-0 scanline pointer-events-none" />
+
+      {/* Step readout */}
+      <div className="font-mono text-accent text-lg sm:text-2xl font-bold tracking-[0.15em] mb-8 relative z-10">
         {steps[stepIndex]}
+        <span className="cursor-blink" />
       </div>
-      <div className="mt-8 flex gap-3">
-        <div className="w-3 h-3 bg-black animate-ping"></div>
-        <div className="w-3 h-3 bg-black animate-ping" style={{ animationDelay: "200ms" }}></div>
-        <div className="w-3 h-3 bg-black animate-ping" style={{ animationDelay: "400ms" }}></div>
+
+      {/* Progress bar */}
+      <div className="w-48 sm:w-64 h-[3px] bg-ink-faint/20 relative z-10">
+        <div 
+          className="h-full bg-accent transition-all duration-100 ease-linear"
+          style={{ width: `${progress}%` }}
+        />
+      </div>
+
+      {/* Step counter */}
+      <div className="mt-6 font-mono text-[10px] text-ink-faint tracking-[0.3em] uppercase relative z-10">
+        Step {stepIndex + 1} / {steps.length}
       </div>
     </div>
   );

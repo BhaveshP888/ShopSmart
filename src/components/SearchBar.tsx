@@ -3,23 +3,37 @@ import { useState } from "react";
 
 export default function SearchBar({ onSearch }: { onSearch: (q: string) => void }) {
   const [query, setQuery] = useState("");
+  const [isFocused, setIsFocused] = useState(false);
 
   return (
     <form 
       onSubmit={(e) => { e.preventDefault(); if(query.trim()) onSearch(query); }}
-      className="w-full flex flex-col gap-4"
+      className="w-full"
     >
-      <label htmlFor="search" className="font-mono text-sm uppercase tracking-widest text-gray-500 font-bold">
-        // Query_Input
-      </label>
-      <div className="relative group">
+      {/* Input label */}
+      <div className="flex items-center gap-2 mb-3">
+        <div className={`w-2 h-2 transition-colors duration-300 ${isFocused ? 'bg-accent' : 'bg-ink-faint'}`} />
+        <label htmlFor="search" className="font-mono text-[10px] sm:text-xs uppercase tracking-[0.3em] text-ink-muted font-bold">
+          Query_Input
+        </label>
+      </div>
+
+      {/* Textarea */}
+      <div className="relative">
         <textarea
           id="search"
           rows={2}
           value={query}
           onChange={(e) => setQuery(e.target.value)}
-          placeholder="I need a quiet blender for smoothies under $100..."
-          className="w-full bg-transparent border-b-4 border-black text-4xl md:text-6xl font-black placeholder:text-gray-300 focus:outline-none focus:border-[#FF4500] resize-none overflow-hidden transition-colors duration-200 py-2"
+          onFocus={() => setIsFocused(true)}
+          onBlur={() => setIsFocused(false)}
+          placeholder="I need a 65 inch OLED TV under ₹1,00,000..."
+          className={`w-full bg-transparent border-b-[3px] transition-colors duration-300
+            ${isFocused ? 'border-accent' : 'border-ink'} 
+            text-2xl sm:text-4xl lg:text-5xl font-extrabold 
+            placeholder:text-ink-faint/40 
+            focus:outline-none resize-none overflow-hidden 
+            py-3 tracking-tight leading-tight`}
           onKeyDown={(e) => {
             if (e.key === "Enter" && !e.shiftKey) {
               e.preventDefault();
@@ -28,13 +42,19 @@ export default function SearchBar({ onSearch }: { onSearch: (q: string) => void 
           }}
         />
       </div>
-      <div className="flex justify-between items-center mt-2">
-        <span className="font-mono text-xs text-gray-400 hidden sm:block">Press ENTER to execute</span>
+
+      {/* Controls row */}
+      <div className="flex justify-between items-center mt-4">
+        <span className="font-mono text-[10px] text-ink-faint hidden sm:flex items-center gap-2 tracking-widest uppercase">
+          <kbd className="border border-ink-faint px-1.5 py-0.5 text-ink-muted">Enter</kbd>
+          to execute
+        </span>
         <button 
           type="submit"
-          className="bg-black text-white font-mono uppercase tracking-widest px-8 py-3 text-sm hover:bg-[#FF4500] transition-colors ml-auto"
+          className="group relative bg-ink text-surface-elevated font-mono uppercase tracking-[0.2em] px-6 sm:px-10 py-3 sm:py-4 text-xs sm:text-sm font-bold hover:bg-accent transition-colors duration-200 ml-auto"
         >
-          Execute Search
+          Execute_Search
+          <span className="absolute right-3 top-1/2 -translate-y-1/2 text-ink-muted group-hover:text-surface-elevated transition-colors">→</span>
         </button>
       </div>
     </form>
